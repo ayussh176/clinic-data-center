@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,7 +6,7 @@ import { db } from "@/lib/firebase";
 import { doc, setDoc } from "firebase/firestore";
 
 const SignUp = () => {
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(""); // any input accepted
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [doctorName, setDoctorName] = useState("");
@@ -21,55 +20,36 @@ const SignUp = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!username || !password || !confirmPassword || !doctorName || !specialization || !department) {
-      toast({
-        title: "Error",
-        description: "Please fill all fields",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (password !== confirmPassword) {
-      toast({
-        title: "Error",
-        description: "Passwords do not match",
-        variant: "destructive",
-      });
-      return;
-    }
 
+    // No restrictions: proceed regardless of input values
+    
     try {
       setIsLoading(true);
-      await signup(username, password);
-      
+      const user = await signup(username, password);
+
       // Create doctor profile in Firestore
-      const auth = useAuth();
-      if (auth.currentUser) {
-        const docRef = doc(db, "doctors", auth.currentUser.uid);
-        await setDoc(docRef, {
-          name: doctorName,
-          email: username,
-          specialization,
-          department,
-          doctorId: auth.currentUser.uid,
-          createdAt: new Date().toISOString(),
-          appointments: 0,
-          surgeries: 0,
-          meetings: 0
-        });
-      }
+      await setDoc(doc(db, "doctors", user.uid), {
+        name: doctorName,
+        email: username,
+        specialization,
+        department,
+        doctorId: user.uid,
+        createdAt: new Date().toISOString(),
+        appointments: 0,
+        surgeries: 0,
+        meetings: 0
+      });
       
       toast({
         title: "Success",
         description: "Account created successfully!",
       });
       navigate("/dashboard");
-    } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to create account. Please try again.",
+        description: error?.message || "Failed to create account. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -82,7 +62,7 @@ const SignUp = () => {
       <div className="max-w-md w-full bg-white rounded-3xl shadow-md overflow-hidden">
         <div className="p-8">
           <h1 className="text-3xl font-bold text-center mb-2">PATIENT KHATA</h1>
-          <h2 className="text-xl text-gray-500 text-center mb-8">sign up</h2>
+          <h2 className="text-xl text-gray-500 text-center mb-8">Sign Up</h2>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
@@ -91,8 +71,8 @@ const SignUp = () => {
               </label>
               <input
                 id="username"
-                type="email"
-                placeholder="enter Username"
+                type="text"
+                placeholder="enter any value"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -106,7 +86,7 @@ const SignUp = () => {
               <input
                 id="doctorName"
                 type="text"
-                placeholder="enter your full name"
+                placeholder="enter any value"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
                 value={doctorName}
                 onChange={(e) => setDoctorName(e.target.value)}
@@ -120,7 +100,7 @@ const SignUp = () => {
               <input
                 id="specialization"
                 type="text"
-                placeholder="e.g. Cardiology"
+                placeholder="enter any value"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
                 value={specialization}
                 onChange={(e) => setSpecialization(e.target.value)}
@@ -134,7 +114,7 @@ const SignUp = () => {
               <input
                 id="department"
                 type="text"
-                placeholder="e.g. Internal Medicine"
+                placeholder="enter any value"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
@@ -148,7 +128,7 @@ const SignUp = () => {
               <input
                 id="password"
                 type="password"
-                placeholder="enter password"
+                placeholder="enter any value"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -162,7 +142,7 @@ const SignUp = () => {
               <input
                 id="confirmPassword"
                 type="password"
-                placeholder="confirm password"
+                placeholder="enter any value"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}

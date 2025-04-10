@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
@@ -23,7 +22,9 @@ const NewPatient = () => {
     prescription: ""
   });
   
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -31,6 +32,7 @@ const NewPatient = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Basic check for name and age
     if (!formData.name || !formData.age) {
       toast({
         title: "Error",
@@ -56,9 +58,10 @@ const NewPatient = () => {
       const patientsCollection = collection(db, "patients");
       const docRef = await addDoc(patientsCollection, {
         ...formData,
+        // Additional fields
         doctorId: currentUser.uid,
         createdAt: new Date().toISOString(),
-        lastVisitDate: new Date().toISOString()
+        lastVisitDate: new Date().toISOString(),
       });
       
       toast({
@@ -66,7 +69,8 @@ const NewPatient = () => {
         description: "Patient added successfully!",
       });
       
-      navigate(`/patient/${docRef.id}`);
+      // Navigate to Search Patient page with this new doc ID
+      navigate(`/search-patient?patientId=${docRef.id}`);
     } catch (error) {
       toast({
         title: "Error",

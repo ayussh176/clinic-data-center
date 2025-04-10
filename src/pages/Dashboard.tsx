@@ -35,6 +35,7 @@ const Dashboard = () => {
         const docSnap = await getDoc(docRef);
         
         if (docSnap.exists()) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           setDoctorData({ ...docSnap.data() as any });
         } else {
           toast({

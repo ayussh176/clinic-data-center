@@ -1,4 +1,3 @@
-
 import { initializeApp } from "firebase/app";
 import { 
   getAuth, 
@@ -9,14 +8,14 @@ import {
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// Firebase configuration
+// Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyA-PLACEHOLDER-VALUE-REPLACE-WITH-YOUR-API-KEY",
-  authDomain: "patient-khata.firebaseapp.com",
-  projectId: "patient-khata",
-  storageBucket: "patient-khata.appspot.com",
-  messagingSenderId: "PLACEHOLDER",
-  appId: "PLACEHOLDER"
+  apiKey: "AIzaSyDaz4ZRPd-YhxAy_SzJt5Wp2a3wJSCHXII",
+  authDomain: "patiententry-96229.firebaseapp.com",
+  projectId: "patiententry-96229",
+  storageBucket: "patiententry-96229.appspot.com",
+  messagingSenderId: "88662834579",
+  appId: "1:88662834579:web:c04d6c277a768fef3c7c66"
 };
 
 // Initialize Firebase

@@ -1,11 +1,10 @@
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(""); // any input accepted
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
@@ -14,14 +13,6 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!username || !password) {
-      toast({
-        title: "Error",
-        description: "Please fill all fields",
-        variant: "destructive",
-      });
-      return;
-    }
 
     try {
       setIsLoading(true);
@@ -31,10 +22,11 @@ const Login = () => {
         description: "You've successfully logged in!",
       });
       navigate("/dashboard");
-    } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to log in. Please check your credentials.",
+        description: error?.message || "Failed to log in. Please check your credentials.",
         variant: "destructive",
       });
     } finally {
@@ -52,12 +44,12 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <label htmlFor="username" className="block text-sm font-medium">
-                Username
+                Username (Email)
               </label>
               <input
                 id="username"
                 type="text"
-                placeholder="enter Username"
+                placeholder="enter any value"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -71,7 +63,7 @@ const Login = () => {
               <input
                 id="password"
                 type="password"
-                placeholder="enter password"
+                placeholder="enter any value"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
