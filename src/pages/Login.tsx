@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 const Login = () => {
-  const [username, setUsername] = useState(""); // any input accepted
+  const [username, setUsername] = useState(""); // email
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
@@ -22,7 +24,6 @@ const Login = () => {
         description: "You've successfully logged in!",
       });
       navigate("/dashboard");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
         title: "Error",
@@ -31,6 +32,30 @@ const Login = () => {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!username) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email before resetting password.",
+        variant: "destructive",
+      });
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, username);
+      toast({
+        title: "Password Reset Sent",
+        description: "Please check your email for a password reset link.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error?.message || "Could not send password reset email.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -71,9 +96,13 @@ const Login = () => {
             </div>
             
             <div className="text-right">
-              <a href="#" className="text-sm text-gray-600 hover:underline">
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="text-sm text-gray-600 hover:underline"
+              >
                 Forgot password?
-              </a>
+              </button>
             </div>
             
             <div className="flex space-x-4">
